@@ -131,7 +131,7 @@ const FullScreenChatPage = () => {
               <div className="flex items-center gap-2.5">
                 <ShipWheelIcon className="size-9 text-primary hidden md:block" />
                 <span className="text-xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider hidden md:block">
-                  Streamify
+                  Collab
                 </span>
               </div>
             </div>
