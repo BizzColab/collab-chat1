@@ -2,12 +2,20 @@ import { useState, useRef } from "react";
 import useAuthUser from "../hooks/useAuthUser";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { completeOnboarding, uploadProfilePicture } from "../lib/api";
-import { LoaderIcon, MapPinIcon, ShipWheelIcon, ShuffleIcon, UploadIcon, CameraIcon } from "lucide-react";
+import { uploadProfilePicture, updateProfile } from "../lib/api";
+import {
+  LoaderIcon,
+  MapPinIcon,
+  ShuffleIcon,
+  UploadIcon,
+  CameraIcon,
+  SaveIcon,
+  UserIcon,
+} from "lucide-react";
 import { LANGUAGES } from "../constants";
 import { getImageUrl } from "../lib/utils";
 
-const OnboardingPage = () => {
+const ProfileSettings = () => {
   const { authUser } = useAuthUser();
   const queryClient = useQueryClient();
   const fileInputRef = useRef(null);
@@ -30,7 +38,8 @@ const OnboardingPage = () => {
       const fullImageUrl = getImageUrl(data.user.profilePic);
       setFormState({ ...formState, profilePic: data.user.profilePic });
       setPreviewUrl(fullImageUrl);
-      toast.success("Profile picture uploaded successfully!");
+      setSelectedFile(null);
+      toast.success("Profile picture updated successfully!");
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
     },
     onError: (error) => {
@@ -38,44 +47,42 @@ const OnboardingPage = () => {
     },
   });
 
-  const { mutate: onboardingMutation, isPending } = useMutation({
-    mutationFn: completeOnboarding,
+  const { mutate: updateProfileMutation, isPending: isUpdating } = useMutation({
+    mutationFn: updateProfile,
     onSuccess: () => {
-      toast.success("Profile onboarded successfully");
+      toast.success("Profile updated successfully");
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
     },
-
     onError: (error) => {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Failed to update profile");
     },
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    onboardingMutation(formState);
+    updateProfileMutation(formState);
   };
 
   const handleRandomAvatar = () => {
-    const idx = Math.floor(Math.random() * 100) + 1; // 1-100 included
+    const idx = Math.floor(Math.random() * 100) + 1;
     const randomAvatar = `https://avatar.iran.liara.run/public/${idx}.png`;
 
     setFormState({ ...formState, profilePic: randomAvatar });
     setPreviewUrl(randomAvatar);
     setSelectedFile(null);
-    toast.success("Random profile picture generated!");
+
+    // Immediately update the profile with the new random avatar
+    updateProfileMutation({ ...formState, profilePic: randomAvatar });
   };
 
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Validate file type
       if (!file.type.startsWith("image/")) {
         toast.error("Please select an image file");
         return;
       }
 
-      // Validate file size (5MB)
       if (file.size > 5 * 1024 * 1024) {
         toast.error("File size must be less than 5MB");
         return;
@@ -83,7 +90,6 @@ const OnboardingPage = () => {
 
       setSelectedFile(file);
 
-      // Create preview URL
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewUrl(reader.result);
@@ -104,7 +110,10 @@ const OnboardingPage = () => {
     <div className="min-h-screen bg-base-100 flex items-center justify-center p-4">
       <div className="card bg-base-200 w-full max-w-3xl shadow-xl">
         <div className="card-body p-6 sm:p-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6">Complete Your Profile</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6 flex items-center justify-center gap-2">
+            <UserIcon className="size-8" />
+            Profile Settings
+          </h1>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* PROFILE PIC CONTAINER */}
@@ -165,7 +174,12 @@ const OnboardingPage = () => {
                   </button>
                 )}
 
-                <button type="button" onClick={handleRandomAvatar} className="btn btn-accent btn-sm">
+                <button
+                  type="button"
+                  onClick={handleRandomAvatar}
+                  className="btn btn-accent btn-sm"
+                  disabled={isUpdating}
+                >
                   <ShuffleIcon className="size-4 mr-2" />
                   Random Avatar
                 </button>
@@ -237,7 +251,9 @@ const OnboardingPage = () => {
                 <select
                   name="learningLanguage"
                   value={formState.learningLanguage}
-                  onChange={(e) => setFormState({ ...formState, learningLanguage: e.target.value })}
+                  onChange={(e) =>
+                    setFormState({ ...formState, learningLanguage: e.target.value })
+                  }
                   className="select select-bordered w-full"
                 >
                   <option value="">Select language you're learning</option>
@@ -269,17 +285,16 @@ const OnboardingPage = () => {
             </div>
 
             {/* SUBMIT BUTTON */}
-
-            <button className="btn btn-primary w-full" disabled={isPending} type="submit">
-              {!isPending ? (
+            <button className="btn btn-primary w-full" disabled={isUpdating} type="submit">
+              {!isUpdating ? (
                 <>
-                  <ShipWheelIcon className="size-5 mr-2" />
-                  Complete Onboarding
+                  <SaveIcon className="size-5 mr-2" />
+                  Save Changes
                 </>
               ) : (
                 <>
                   <LoaderIcon className="animate-spin size-5 mr-2" />
-                  Onboarding...
+                  Saving...
                 </>
               )}
             </button>
@@ -289,4 +304,5 @@ const OnboardingPage = () => {
     </div>
   );
 };
-export default OnboardingPage;
+
+export default ProfileSettings;

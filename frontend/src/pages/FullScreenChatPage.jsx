@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import useAuthUser from "../hooks/useAuthUser";
+import useAutoResizeTextarea from "../hooks/useAutoResizeTextarea";
 import { useQuery } from "@tanstack/react-query";
 import { getStreamToken } from "../lib/api";
+import { getImageUrl } from "../lib/utils";
 
 import {
   Channel,
-  ChannelHeader,
   Chat,
   MessageInput,
   MessageList,
@@ -17,6 +18,7 @@ import { StreamChat } from "stream-chat";
 import toast from "react-hot-toast";
 
 import ChatLoader from "../components/ChatLoader";
+import ChatHeader from "../components/ChatHeader";
 import { 
   VideoIcon, 
   ArrowLeftIcon, 
@@ -39,6 +41,9 @@ const FullScreenChatPage = () => {
 
   const { authUser } = useAuthUser();
   const { logoutMutation } = useLogout();
+  
+  // Enable auto-resize for textarea with unlimited height (fully dynamic)
+  useAutoResizeTextarea(null, 1);
 
   const { data: tokenData } = useQuery({
     queryKey: ["streamToken"],
@@ -59,7 +64,7 @@ const FullScreenChatPage = () => {
           {
             id: authUser._id,
             name: authUser.fullName,
-            image: authUser.profilePic,
+            image: getImageUrl(authUser.profilePic),
           },
           tokenData.token
         );
@@ -157,7 +162,7 @@ const FullScreenChatPage = () => {
               <div className="avatar">
                 <div className="w-9 rounded-full">
                   <img 
-                    src={authUser?.profilePic} 
+                    src={getImageUrl(authUser?.profilePic)} 
                     alt="User Avatar" 
                     onError={(e) => {
                       e.target.src = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
@@ -183,10 +188,7 @@ const FullScreenChatPage = () => {
           <Channel channel={channel}>
             <div className="w-full h-full flex flex-col">
               <Window className="h-full flex flex-col">
-                <ChannelHeader 
-                  title={channel.data?.name || "Chat"}
-                  className="flex-shrink-0"
-                />
+                <ChatHeader title={channel.data?.name || "Chat"} />
                 <MessageList 
                   className="flex-1 overflow-y-auto"
                 />

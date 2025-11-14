@@ -2,6 +2,20 @@ import { upsertStreamUser } from "../lib/stream.js";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 
+// Helper function to get full image URL
+function getFullImageUrl(profilePic) {
+  if (!profilePic) return "";
+  
+  // If it's already a full URL (starts with http/https), return as is
+  if (profilePic.startsWith("http://") || profilePic.startsWith("https://")) {
+    return profilePic;
+  }
+  
+  // Otherwise, prepend the base URL
+  const baseUrl = process.env.BACKEND_URL || "http://localhost:5000";
+  return `${baseUrl}${profilePic}`;
+}
+
 // 🧠 Helper function to create JWT
 function createToken(userId) {
   return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
@@ -43,7 +57,7 @@ export async function signup(req, res) {
       await upsertStreamUser({
         id: newUser._id.toString(),
         name: newUser.fullName,
-        image: newUser.profilePic || "",
+        image: getFullImageUrl(newUser.profilePic),
       });
       console.log(`✅ Stream user created for ${newUser.fullName}`);
     } catch (error) {
@@ -133,7 +147,7 @@ export async function onboard(req, res) {
       await upsertStreamUser({
         id: updatedUser._id.toString(),
         name: updatedUser.fullName,
-        image: updatedUser.profilePic || "",
+        image: getFullImageUrl(updatedUser.profilePic),
       });
       console.log(`✅ Stream user updated for ${updatedUser.fullName}`);
     } catch (streamError) {

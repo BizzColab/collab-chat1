@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import useAuthUser from "../hooks/useAuthUser";
+import useAutoResizeTextarea from "../hooks/useAutoResizeTextarea";
 import { useQuery } from "@tanstack/react-query";
 import { getStreamToken } from "../lib/api";
+import { getImageUrl } from "../lib/utils";
 
 import {
   Channel,
-  ChannelHeader,
   Chat,
   MessageInput,
   MessageList,
@@ -17,6 +18,7 @@ import { StreamChat } from "stream-chat";
 import toast from "react-hot-toast";
 
 import ChatLoader from "../components/ChatLoader";
+import ChatHeader from "../components/ChatHeader";
 import CallButton from "../components/CallButton";
 
 const STREAM_API_KEY = import.meta.env.VITE_STREAM_API_KEY;
@@ -29,6 +31,9 @@ const ChatPage = () => {
   const [loading, setLoading] = useState(true);
 
   const { authUser } = useAuthUser();
+  
+  // Enable auto-resize for textarea with unlimited height (fully dynamic)
+  useAutoResizeTextarea(null, 1);
 
   const { data: tokenData } = useQuery({
     queryKey: ["streamToken"],
@@ -49,7 +54,7 @@ const ChatPage = () => {
           {
             id: authUser._id,
             name: authUser.fullName,
-            image: authUser.profilePic,
+            image: getImageUrl(authUser.profilePic),
           },
           tokenData.token
         );
@@ -101,7 +106,7 @@ const ChatPage = () => {
           <div className="w-full relative">
             <CallButton handleVideoCall={handleVideoCall} />
             <Window>
-              <ChannelHeader />
+              <ChatHeader title={channel.data?.name} />
               <MessageList />
               <MessageInput focus />
             </Window>

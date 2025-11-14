@@ -57,6 +57,29 @@
   border-top: 1px solid #ddd;
 }
 
+/* Fully dynamic message input that grows/shrinks with content */
+.str-chat__textarea textarea {
+  min-height: 40px !important;
+  max-height: none !important; /* Remove height limit for fully dynamic behavior */
+  height: auto !important;
+  overflow-y: hidden !important; /* Hide scrollbar for clean look */
+  resize: none !important;
+  line-height: 1.5 !important;
+  transition: height 0.15s ease;
+  box-sizing: border-box !important;
+  padding: 10px 12px !important;
+}
+
+/* Smooth scrollbar styling for when scrolling is needed in the message list */
+.str-chat__textarea textarea::-webkit-scrollbar {
+  width: 6px;
+}
+
+.str-chat__textarea textarea::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
 .str-chat__window {
   height: 100%;
   display: flex;
