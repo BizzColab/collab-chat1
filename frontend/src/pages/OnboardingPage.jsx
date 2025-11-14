@@ -1,16 +1,14 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import useAuthUser from "../hooks/useAuthUser";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { completeOnboarding, uploadProfilePicture } from "../lib/api";
-import { LoaderIcon, MapPinIcon, ShipWheelIcon, ShuffleIcon, UploadIcon, CameraIcon } from "lucide-react";
+import { completeOnboarding } from "../lib/api";
+import { LoaderIcon, MapPinIcon, ShipWheelIcon, ShuffleIcon } from "lucide-react";
 import { LANGUAGES } from "../constants";
-import { getImageUrl } from "../lib/utils";
 
 const OnboardingPage = () => {
   const { authUser } = useAuthUser();
   const queryClient = useQueryClient();
-  const fileInputRef = useRef(null);
 
   const [formState, setFormState] = useState({
     fullName: authUser?.fullName || "",
@@ -19,23 +17,6 @@ const OnboardingPage = () => {
     learningLanguage: authUser?.learningLanguage || "",
     location: authUser?.location || "",
     profilePic: authUser?.profilePic || "",
-  });
-
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(getImageUrl(authUser?.profilePic) || "");
-
-  const { mutate: uploadImageMutation, isPending: isUploading } = useMutation({
-    mutationFn: uploadProfilePicture,
-    onSuccess: (data) => {
-      const fullImageUrl = getImageUrl(data.user.profilePic);
-      setFormState({ ...formState, profilePic: data.user.profilePic });
-      setPreviewUrl(fullImageUrl);
-      toast.success("Profile picture uploaded successfully!");
-      queryClient.invalidateQueries({ queryKey: ["authUser"] });
-    },
-    onError: (error) => {
-      toast.error(error.response?.data?.message || "Failed to upload profile picture");
-    },
   });
 
   const { mutate: onboardingMutation, isPending } = useMutation({
@@ -61,43 +42,7 @@ const OnboardingPage = () => {
     const randomAvatar = `https://avatar.iran.liara.run/public/${idx}.png`;
 
     setFormState({ ...formState, profilePic: randomAvatar });
-    setPreviewUrl(randomAvatar);
-    setSelectedFile(null);
     toast.success("Random profile picture generated!");
-  };
-
-  const handleFileSelect = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Validate file type
-      if (!file.type.startsWith("image/")) {
-        toast.error("Please select an image file");
-        return;
-      }
-
-      // Validate file size (5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("File size must be less than 5MB");
-        return;
-      }
-
-      setSelectedFile(file);
-
-      // Create preview URL
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewUrl(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleUploadClick = () => {
-    if (selectedFile) {
-      uploadImageMutation(selectedFile);
-    } else {
-      toast.error("Please select an image first");
-    }
   };
 
   return (
@@ -110,10 +55,10 @@ const OnboardingPage = () => {
             {/* PROFILE PIC CONTAINER */}
             <div className="flex flex-col items-center justify-center space-y-4">
               {/* IMAGE PREVIEW */}
-              <div className="size-32 rounded-full bg-base-300 overflow-hidden ring-2 ring-primary ring-offset-2">
-                {previewUrl ? (
+              <div className="size-32 rounded-full bg-base-300 overflow-hidden">
+                {formState.profilePic ? (
                   <img
-                    src={previewUrl}
+                    src={formState.profilePic}
                     alt="Profile Preview"
                     className="w-full h-full object-cover"
                   />
@@ -124,58 +69,13 @@ const OnboardingPage = () => {
                 )}
               </div>
 
-              {/* Hidden file input */}
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleFileSelect}
-                className="hidden"
-              />
-
-              {/* Upload buttons */}
-              <div className="flex flex-wrap items-center justify-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="btn btn-primary btn-sm"
-                >
-                  <UploadIcon className="size-4 mr-2" />
-                  Choose Image
-                </button>
-
-                {selectedFile && (
-                  <button
-                    type="button"
-                    onClick={handleUploadClick}
-                    className="btn btn-success btn-sm"
-                    disabled={isUploading}
-                  >
-                    {isUploading ? (
-                      <>
-                        <LoaderIcon className="animate-spin size-4 mr-2" />
-                        Uploading...
-                      </>
-                    ) : (
-                      <>
-                        <UploadIcon className="size-4 mr-2" />
-                        Upload Selected
-                      </>
-                    )}
-                  </button>
-                )}
-
-                <button type="button" onClick={handleRandomAvatar} className="btn btn-accent btn-sm">
+              {/* Generate Random Avatar BTN */}
+              <div className="flex items-center gap-2">
+                <button type="button" onClick={handleRandomAvatar} className="btn btn-accent">
                   <ShuffleIcon className="size-4 mr-2" />
-                  Random Avatar
+                  Generate Random Avatar
                 </button>
               </div>
-
-              {selectedFile && (
-                <p className="text-sm text-base-content/70">
-                  Selected: {selectedFile.name} ({(selectedFile.size / 1024).toFixed(2)} KB)
-                </p>
-              )}
             </div>
 
             {/* FULL NAME */}

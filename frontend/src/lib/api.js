@@ -63,20 +63,3 @@ export async function getStreamToken() {
   const response = await axiosInstance.get("/chat/token");
   return response.data;
 }
-
-export async function uploadProfilePicture(file) {
-  const formData = new FormData();
-  formData.append("profilePicture", file);
-  
-  const response = await axiosInstance.post("/users/upload-profile-picture", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
-  return response.data;
-}
-
-export async function updateProfile(userData) {
-  const response = await axiosInstance.put("/users/profile", userData);
-  return response.data;
-}
