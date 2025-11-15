@@ -26,7 +26,11 @@ const Navbar = () => {
             <div className="pl-5">
               <Link to="/" className="flex items-center gap-2.5">
                 <div className="p-2 bg-gradient-to-br from-primary to-secondary rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-            <ShipWheelIcon className="size-6 text-primary-content" />
+              <img
+                src="/collab_logo.png"
+                alt="Collab Logo"
+                className="w-8 h-8 object-cover"
+              />
           </div>
                 <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary  tracking-wider">
                   Streamify

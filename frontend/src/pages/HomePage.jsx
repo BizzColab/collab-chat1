@@ -88,7 +88,7 @@ const HomePage = () => {
 
                 {/* Recommended Users Section */}
                 <section className="mt-12">
-                    <div className="mb-8 backdrop-blur-sm bg-gradient-to-r from-primary/5 via-secondary/5 to-accent/5 rounded-2xl p-6 border border-primary/10">
+                    <div className="mb-8 backdrop-blur-sm bg-gradient-to-r from-primary/5 via-secondary/5 to-accent/5 rounded-2xl p-4 border border-primary/10">
                         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                             <div className="flex items-center gap-3">
                                 <div className="p-3 bg-gradient-to-br from-primary to-secondary rounded-xl shadow-lg">
@@ -96,10 +96,10 @@ const HomePage = () => {
                                 </div>
                                 <div>
                                     <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
-                                        Meet New Learners
+                                        Recommendations
                                     </h2>
                                     <p className="text-base-content/70 text-sm mt-1">
-                                        Discover perfect language exchange partners based on your profile
+                                        Discover new friendsb to chat
                                     </p>
                                 </div>
                             </div>

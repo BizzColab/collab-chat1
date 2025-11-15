@@ -129,14 +129,17 @@ const FullScreenChatPage = () => {
               </button>
               
               <div className="flex items-center gap-2.5">
-                 <div className="p-2 bg-gradient-to-br from-primary to-secondary rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-            <ShipWheelIcon className="size-6 text-primary-content" />
-          </div>
-                <span className="text-xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider hidden md:block">
-                  Collab
-                </span>
-              </div>
+  <img
+    src="/collab-logo.png"
+    alt="Collab Logo"
+    className="w-8 h-8 object-cover"
+  />
+  <span className="text-xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider hidden md:block">
+    Collab
+  </span>
+</div>
             </div>
+
 
             <div className="flex items-center gap-3 sm:gap-4">
               <button 

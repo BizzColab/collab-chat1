@@ -10,19 +10,23 @@ const Sidebar = () => {
   return (
     <aside className="w-64 bg-gradient-to-b from-base-200 to-base-300 border-r border-base-300/50 hidden lg:flex flex-col h-screen sticky top-0 shadow-xl">
       {/* Logo Section */}
-      <div className="p-6 border-b border-base-300/50 bg-base-100/50 backdrop-blur-sm">
-        <Link to="/" className="flex items-center gap-3 group">
-          <div className="p-2 bg-gradient-to-br from-primary to-secondary rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-            <ShipWheelIcon className="size-6 text-primary-content" />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent tracking-wide">
-              Collab
-            </span>
-            
-          </div>
-        </Link>
-      </div>
+     <div className="p-6 border-b border-base-300/50 bg-base-100/50 backdrop-blur-sm">
+  <Link to="/" className="flex items-center gap-3">
+    <img
+      src="/collab-logo.png"
+      alt="Collab Logo"
+      className="w-12 h-12 rounded-full object-cover"
+    />
+
+    <div className="flex flex-col">
+      <span className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent tracking-wide">
+        Collab
+      </span>
+    </div>
+  </Link>
+</div>
+
+
 
       {/* Navigation Section */}
       <nav className="flex-1 p-4 space-y-2">

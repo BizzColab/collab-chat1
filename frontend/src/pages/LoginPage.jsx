@@ -28,28 +28,34 @@ const LoginPage = () => {
     loginMutation(loginData);
   };
 
-  return (
-    <div
-      className="h-screen flex items-center justify-center p-4 sm:p-6 md:p-8"
-      data-theme="forest"
-    >
-      <div className="border border-primary/25 flex flex-col lg:flex-row w-full max-w-5xl mx-auto bg-base-100 rounded-xl shadow-lg overflow-hidden">
-        {/* LOGIN FORM SECTION */}
-        <div className="w-full lg:w-1/2 p-4 sm:p-8 flex flex-col">
-          {/* LOGO */}
-          <div className="mb-4 flex items-center justify-start gap-2">
-            <ShipWheelIcon className="size-9 text-primary" />
-            <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary  tracking-wider">
-            Collab
-            </span>
-          </div>
+ return (
+  <div
+    className="h-screen flex items-center justify-center p-4 sm:p-6 md:p-8"
+    data-theme="forest"
+  >
+    <div className="border border-primary/25 flex flex-col lg:flex-row w-full max-w-5xl mx-auto bg-base-100 rounded-xl shadow-lg overflow-hidden">
+      {/* LOGIN FORM SECTION */}
+      <div className="w-full lg:w-1/2 p-4 sm:p-8 flex flex-col">
 
-          {/* ERROR MESSAGE DISPLAY */}
-          {error && (
-            <div className="alert alert-error mb-4">
-              <span>{error.response.data.message}</span>
-            </div>
-          )}
+        {/* LOGO */}
+        <div className="mb-4 flex items-center justify-start gap-2">
+          <img
+            src="/collab-logo.png"
+            alt="Collab Logo"
+            className="w-10 h-10 object-cover"
+          />
+          <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider">
+            Collab
+          </span>
+        </div>
+
+        {/* ERROR MESSAGE DISPLAY */}
+        {error && (
+          <div className="alert alert-error mb-4">
+            <span>{error.response.data.message}</span>
+          </div>
+        )}
+
 
           <div className="w-full">
             <form onSubmit={handleLogin}>
