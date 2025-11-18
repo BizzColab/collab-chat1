@@ -29,7 +29,7 @@ graph TB
     B --> D[User Service]
     B --> E[Chat Service]
     B --> F[Notification Service]
-    C --> G[(Supabase)]
+    C --> G[(MongoDB)]
     D --> G
     E --> H[Stream Chat API]
     F --> G
